@@ -1,0 +1,84 @@
+disassemble
+objdump -d
+
+disassemble only a C function (section)
+objdump --disassemble='function_name'
+
+intel syntax
+objdump -d -M intel
+
+
+section information
+objdump -h
+
+Idx | Name | Size | VMA | LMA | File off | Algn
+
+Idx: Shows the index number of the section in the table. This number indicates the section's position in the file.
+Name: Specifies the name of the section. The section name is used to describe the type or purpose of its contents. Common section names include: .text (code), .data (data), .bss (uninitialized data), .rodata (read-only data).
+Size: Indicates the size of the section in bytes. This specifies the amount of space the section occupies in memory or in the file.
+VMA: Represents the Virtual Memory Address of the section. This address shows the location in memory where the section’s executable code or data segments are mapped. VMA is translated to the actual memory address by the operating system when the program is executed.
+LMA: Indicates the Load Memory Address of the section. This shows the address at which the section is loaded from the file into memory. Typically, LMA and VMA have the same value, but they can differ in some cases (e.g., in embedded systems).
+File off: Shows the starting position of the section within the file. This specifies the position of the first byte of the section in the file and is directly related to the file's content.
+Algn: Displays the alignment value of the section. This specifies how the section is aligned in memory, which usually affects memory efficiency and performance. It is shown in the form of 2**n, indicating how much alignment is required for the section in memory.
+
+
+symbol table
+objdump -t
+
+
+
+Fundementally we have 4 general purpose registers.
+name    64bit    32bit    16bit    8bit(high)    8bit(low)
+A       RAX      EAX      AX       AH            AL
+B       RBX      EBX      BX       BH            BL
+C       RCX      ECX      CX       CH            CL
+D       RDX      EDX      DX       DH            DL
+
+on x64 and AMD systems, we have 8 more general purpose registers.
+name    64bit    32bit    16bit    8bit(high)    8bit(low)
+R8      R8       R8D      R8W      R8B           -
+R9      R9       R9D      R9W      R9B           -
+R10     R10      R10D     R10W     R10B          -
+R11     R11      R11D     R11W     R11B          -
+R12     R12      R12D     R12W     R12B          -
+R13     R13      R13D     R13W     R13B          -
+R14     R14      R14D     R14W     R14B          -
+R15     R15      R15D     R15W     R15B          -
+
+COUNTER REGISTER
+The RCX/ECX/CX register is optimized for various instructions related to loops.
+These instructions automatically update the RCX/ECX/CX register, which
+contributes to high performance. While other registers can be used, it is not
+as logical due to the lack of optimization for loop-related instructions.
+
+SOURCE REGISTER & DESTINATION REGISTER
+SI -> Source Instruction
+DI -> Destination Instruction
+The RSI/ESI/SI and RDI/EDI/DI/ registers are general purpose "source" and
+"destination" registers for the fill, copy, and compare instructions.
+
+BASE POINTER (aka frame pointer) & STACK POINTER & INSTRUCTION POINTER
+these registers are used for managing the stack frame.
+RBP -> holds the starting address of stack frame. thus, offsetting and accessing any
+memory region located within that subroutine's area becomes easier.
+RSP -> Holds the address of the last item pushed onto the processor stack. Registers
+can be pushed onto the stack if their values need to be preserved. When they
+are popped from the stack, their values are restored.
+RIP -> The RIP register contains the address of the next instruction to be executed.
+The CPU automatically adds the correct number to it as it executes instructions
+to keep it pointed at the correct next instruction. When you call a subroutine,
+the RIP is pushed on the RSP stack and RIP is loaded with the address of the
+subroutine. When the subroutine returns, the RIP that was pushed before the
+call is popped from the stack into RIP. Execution continues at the instruction
+after the call.
+
+Flags
+This is the status register and contains current state of CPU.
+It holds 64 bits. each bit has own functionality.
+
+
+PROLOGUE & EPILOGUE
+https://en.wikipedia.org/wiki/Function_prologue_and_epilogue
+
+CALLING CONVENTION in Linux
+https://en.wikipedia.org/wiki/Calling_convention

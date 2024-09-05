@@ -5,12 +5,13 @@ OBJ_DIR := obj
 OUT_DIR := out
 SRC_DIR := srcs
 
-ARCH := elf64
+ARCH := elf64 -g
+CLIBLOC = /usr/lib/ld-linux-x86-64.so.2
 
 .PHONY: all re clean directories first_prog hello
 
 # the use of the `all` directive in this project is unnecessary.
-all: directories first_prog hello
+all: directories first_prog hello two_sum
 re: clean all
 
 # The + symbol is used with the -exec flag in the find command to enable
@@ -31,3 +32,7 @@ first_prog: directories
 hello: directories
 	$(AS) -f $(ARCH) $(SRC_DIR)/$@.asm -o $(OBJ_DIR)/$@.o
 	$(LD) $(OBJ_DIR)/$@.o -o $(OUT_DIR)/$@
+
+two_sum: directories
+	$(AS) -f $(ARCH) $(SRC_DIR)/$@.asm -o $(OBJ_DIR)/$@.o
+	$(LD) $(OBJ_DIR)/$@.o -lc -dynamic-linker  $(CLIBLOC) -o $(OUT_DIR)/$@
