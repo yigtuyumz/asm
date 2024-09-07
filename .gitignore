@@ -1,5 +1,6 @@
 .vscode/
 out/
 obj/
+lib/
 tests/*
 vgcore.*

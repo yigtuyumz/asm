@@ -82,3 +82,118 @@ https://en.wikipedia.org/wiki/Function_prologue_and_epilogue
 
 CALLING CONVENTION in Linux
 https://en.wikipedia.org/wiki/Calling_convention
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+; temel olarak 3 adet 'section' bulunur.
+
+
+section .data
+; burada sabit verilerin tanimlamalari yapilir.
+; string
+; magic numbers
+; terminating string
+; gibi...
+
+section .bss
+; programda kullanicak olan veriler icin hafizada
+; yer ayirma islemleri bu kisimda yapilir.
+
+section .text
+; kodlamalarin yapildigi kisimdir.
+; 'label' lerin kaydedildigi bir tablo vardir ve o tabloya
+; kayit islemi burada yapilir.
+; her zaman bir label bulundurmak zorundadir. bu label
+; _start: program ld ile link'lendigi zaman kullanilan entry point ismidir.
+; main: program gcc ile link'lendigi zaman kullanilan entry point ismidir.
+
+; nasm -f elf64 file.asm -> 'file.o' 64 bitlik derleme 'o' formatinda cikti dosyasi olusturur.
+; nasm -f elf32 file.asm -> 'file.o' 32 bitlik derleme 'o' formatinda cikti dosyasi olusturur.
+
+; ld -m elf_i386 -o file file.o -> file.o dosyasini link'ler.
+
+
+; register'lar
+; donanima ozel olusturulan degerlerdir.
+; eax, rax, ebx gibi...
+; her register'in aslinda sayisal bir degeri vardir.
+
+; E register   0000000000000000_00000000_00000000
+; E register =       X         +   H    +    L   
+; 
+;                 .--------------------32 bits--------------------.
+;                 |              .-------------16 bits------------.
+;                 |              |  -8bits HIGH-  |  -8bits LOW-  |
+; General purpose | EAX      AX  |       AH       |      AL       | accumulator register (resulting an arithmetic operation)
+;                 | EBX      BX  |       BH       |      BL       |
+;     registers   | ECX      CS  |       CH       |      CL       | counter register (increment, decrement operations more efficient)
+;                 | EDX      DX  |       DH       |      DL       |
+; ----------------------------------------------------------------.
+;                 | ESI      Source index                          Copy operations (source address of the data)
+;                 | EDI      Destination index                     Copy operations (destination address of the data)
+;                 | ESP      Stack pointer                         Top of the stack (when we push something into the stack, this is increased.)
+;                 | EBP      Base pointer                          Bottom of the stack (constant, always has same value)
+; 
+; 
+; instruction pointer rip
+; her bir islem veya opcode tamamlandiginda instruction pointer degeri 1 artar.
+; dolayisiyla, call gibi durumlarda, etiketin icindeki islemler tamamlandiktan sonra makine bu ifadelerin kullanildigi konuma geri donebilir.
+
+
+
+	;; Flags
+
+	; Carry Flag overflow olustugunda setlenir.
+	CF ; carry flag (tasima bayragi)
+	OF ; overflow flag (tasma bayragi)
+	ZF ; zero flag (sonuc sifir bayragi)
+	SF ; sign flag (isaret bayragi)
+	PF ; parity flag ( tek cift sonuc bayragi)
+
+	; yapilan her bir aritmetik islem sonunda, flaglar yeniden set edilir.
+
+	;; Jump Operations
+	;; 'n' eki not anlamina gelir C--> if !(condition)
+	jmp label ;C--> goto etiket
+	jz        ; jump zero
+	jc        ; jump carry
+	jo        ; jump overflow
+	jg        ; jump greater
+	je        ; jump equal
+	js        ; jump sign flag
+	jge       ; jump greater than equal
+	jl        ; jump less
+	jle       ; jump less equal
+	ja        ; jump above
+	jae       ; jump above equal
+	jb        ; jump below
+	jbe       ; jump below equal
+
+
+
+	;; bitwise operations
+	and  dest, src ;C--> dest & src
+	or   dest, src ;C--> dest | src
+	xor  dest, src ;C--> dest ^ src
+	test dest, src ; dest ile src'yi ve islemine sokar. sonuc 0 ise ZERO FLAG(ZF) 1 olur.
